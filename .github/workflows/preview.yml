@@ -44,8 +44,14 @@ jobs:
           go-version-file: go.mod
       - id: next
         # Nothing when the commit is a release's own, or already has its
-        # preview (a re-run, or a dispatch after the push's run).
+        # preview (a re-run, or a dispatch after the push's run). Forks do
+        # not necessarily have the upstream release tags: fetch the latest
+        # stable release tag so preview-version does not count the entire
+        # history as a new 0.0.1 release. Do not fetch preview tags.
         run: |
+          last=$(gh api repos/TooonyChen/finallyshell/releases/latest --jq .tag_name)
+          git fetch --no-tags https://github.com/TooonyChen/finallyshell.git \
+            "refs/tags/$last:refs/tags/$last"
           version=$(go run ./tools/release preview-version)
           if [ -n "$version" ] && git rev-parse -q --verify "refs/tags/v$version" > /dev/null; then
             echo "::notice::v$version is already published"
