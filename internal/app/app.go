@@ -361,7 +361,7 @@ func (a *App) sidebar(c *ui.Context) {
 			a.sessionPanel(c)
 			return
 		}
-		split := ui.SplitVerticalPercent(c, &a.monitorPct, func() { a.monitorPanel(c) }, func() { a.sessionPanel(c) }).SplitReset(defaultMonitorPct).Fill()
+		split := ui.SplitVerticalPercent(c, &a.monitorPct, func() { a.sessionPanel(c) }, func() { a.monitorPanel(c) }).SplitReset(defaultMonitorPct).Fill()
 		a.splitMoved(c, split, &a.monitorPct, monitorLimits)
 	})
 }

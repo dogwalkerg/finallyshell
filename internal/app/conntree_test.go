@@ -490,7 +490,13 @@ func TestConnectionPageMenus(t *testing.T) {
 	// A new folder from the room past the rows, at the top.
 	a.connTree.tree.Open.Clear() // room past the rows
 	tt.Frame()
-	tt.RightClickAt(100, 790)
+	// The Connections page occupies the upper side panel; click its empty
+	// area rather than assuming the old monitor-first ordering.
+	panelBottom := a.monitorPct / 100 * 819
+	if panelBottom < 40 {
+		panelBottom = 40
+	}
+	tt.RightClickAt(100, panelBottom-12)
 	if err := tt.ChooseMenuItem(locales.NewFolder()); err != nil {
 		t.Fatalf("%v; menu %q", err, tt.Menu())
 	}

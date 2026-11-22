@@ -176,6 +176,11 @@ func TestLayoutInBothLanguages(t *testing.T) {
 			t.Errorf("English: missing %q", want)
 		}
 	}
+	sessionsBox, _ := tt.Find("Sessions (3)")
+	ipBox, _ := tt.Find("IP 45.56.78.90")
+	if sessionsBox.Y >= ipBox.Y {
+		t.Errorf("sessions and connections at y=%.1f, not above monitor at y=%.1f", sessionsBox.Y, ipBox.Y)
+	}
 	saveShot(t, tt, "en.png")
 
 	a.setLanguage("zh-Hans")
