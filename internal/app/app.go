@@ -339,13 +339,8 @@ func (a *App) View(c *ui.Context) {
 		a.dialogs(c)
 		return
 	}
-	ui.Box(c).Fill().Children(func() {
-		split := ui.Split(c, &a.sideWidth, func() { a.sidebar(c) }, func() { a.mainArea(c) }).SplitReset(defaultSideWidth).Fill()
-		a.splitMoved(c, split, &a.sideWidth, sidebarLimits)
-		ui.Box(c).Absolute().Top(0).Left(0).Right(0).Height(34).Children(func() {
-			a.sessionTabs(c)
-		})
-	})
+	split := ui.Split(c, &a.sideWidth, func() { a.sidebar(c) }, func() { a.mainArea(c) }).SplitReset(defaultSideWidth).Fill()
+	a.splitMoved(c, split, &a.sideWidth, sidebarLimits)
 	a.dialogs(c)
 }
 
@@ -376,7 +371,10 @@ func (a *App) sidebar(c *ui.Context) {
 // monitor on the right, the right column holds it too, on top, over the
 // panel when that is there.
 func (a *App) mainArea(c *ui.Context) {
-	a.mainContent(c)
+	ui.Column(c).Fill().Children(func() {
+		a.sessionTabs(c)
+		ui.Box(c).Grow(1).MinHeight(0).Children(func() { a.mainContent(c) })
+	})
 }
 
 // mainContent is the main window's terminal or panel, below the session tabs.
