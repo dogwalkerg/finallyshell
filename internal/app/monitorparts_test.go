@@ -126,7 +126,13 @@ func TestMonitorPartsMenu(t *testing.T) {
 		t.Errorf("all hidden: texts %q", tt.Texts())
 	}
 	// The empty room under the hint has the menu too.
-	tt.RightClickAt(120, 300)
+	// The monitor is below the session/connection panel; locate its empty
+	// area from the monitor IP row instead of assuming monitor-first order.
+	ipBox, ok := tt.Find("IP " + s.ip)
+	if !ok {
+		t.Fatalf("no monitor IP row; texts %q", tt.Texts())
+	}
+	tt.RightClickAt(ipBox.X+10, ipBox.Y+ipBox.H+30)
 	if menuChecked(t, tt, locales.MonitorPartNetwork()) {
 		t.Error("network checked while hidden")
 	}

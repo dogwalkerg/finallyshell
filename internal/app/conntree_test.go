@@ -79,6 +79,16 @@ func TestConnectionPage(t *testing.T) {
 	if tt.HasText("old-box") || tt.HasText(locales.NoSessions()) || !tt.HasText(locales.SessionsTitle(0)) {
 		t.Errorf("texts %q", tt.Texts())
 	}
+	// The search and saved hosts are above the server monitor.
+	searchBox, _ := tt.Find(locales.SearchConnections())
+	monitorBox, _ := tt.Find("IP -")
+	if searchBox.Y >= monitorBox.Y {
+		t.Errorf("connection search at y=%.1f, not above monitor at y=%.1f", searchBox.Y, monitorBox.Y)
+	}
+	webBox, _ := tt.AccessByRole(ui.RoleTreeItem, "web-1")
+	if webBox.Bounds.Y >= monitorBox.Y {
+		t.Errorf("saved connection at y=%.1f, not above monitor at y=%.1f", webBox.Bounds.Y, monitorBox.Y)
+	}
 	// One column: no address, no notes.
 	if _, ok := tt.AccessByRole(ui.RoleTreeItem, "web-1"); !ok || tt.HasText("nginx, front") {
 		t.Errorf("texts %q", tt.Texts())

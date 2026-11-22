@@ -65,7 +65,7 @@ func TestMonitorOnRight(t *testing.T) {
 		t.Errorf("disks at %+v", r)
 	}
 	// The session list takes the left column.
-	if r := find(t, tt, "db-1"); r.X > a.sideWidth || r.Y >= listY || r.Y > 120 {
+	if r := find(t, tt, "db-1"); r.X > a.sideWidth || r.Y != listY || r.Y > 120 {
 		t.Errorf("db-1 at %+v, was at y %v", r, listY)
 	}
 	// The terminal over the panel, left of the column.
