@@ -136,9 +136,13 @@ func paneSpot(t *testing.T, a *App, tt *ui.Tester, s *Session, q *pane, fx, fy f
 		t.Fatal("no command bar")
 	}
 	x0, w := a.sideWidth+1, float32(1280)-a.sideWidth-1
-	h := bar.Bounds.Y - 6
+	// The terminal workspace now has a 34 DIP session strip above the
+	// pane tree; pane rectangles are relative to the area below it.
+	const sessionStripHeight = 34
+	top := float32(sessionStripHeight)
+	h := bar.Bounds.Y - 6 - top
 	r := s.panes.rects()[q]
-	return x0 + (r.x+fx*r.w)*w, (r.y + fy*r.h) * h
+	return x0 + (r.x+fx*r.w)*w, top + (r.y+fy*r.h)*h
 }
 
 // gripOf shows q's grip, hovering the top of q, and returns where it is.

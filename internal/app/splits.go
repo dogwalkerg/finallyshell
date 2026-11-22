@@ -38,7 +38,9 @@ var (
 	monitorLimits = splitLimits{first: 60, second: 90, vertical: true, percent: true}
 	// The terminal keeps a few rows above its command bar; the bottom
 	// panel its tabs, path bar and a row of the table.
-	terminalLimits = splitLimits{first: 140, second: 120, vertical: true, percent: true}
+	// The terminal's first pane includes the session strip above its
+	// panes, so reserve that strip while keeping four terminal rows.
+	terminalLimits = splitLimits{first: 180, second: 120, vertical: true, percent: true}
 	// The tree keeps a short folder name; the table its name column.
 	treeLimits = splitLimits{first: 100, second: 240}
 )
