@@ -339,8 +339,13 @@ func (a *App) View(c *ui.Context) {
 		a.dialogs(c)
 		return
 	}
-	split := ui.Split(c, &a.sideWidth, func() { a.sidebar(c) }, func() { a.mainArea(c) }).SplitReset(defaultSideWidth).Fill()
-	a.splitMoved(c, split, &a.sideWidth, sidebarLimits)
+	ui.Column(c).Fill().Children(func() {
+		a.sessionTabs(c)
+		ui.Box(c).Grow(1).MinHeight(0).Children(func() {
+			split := ui.Split(c, &a.sideWidth, func() { a.sidebar(c) }, func() { a.mainArea(c) }).SplitReset(defaultSideWidth).Fill()
+			a.splitMoved(c, split, &a.sideWidth, sidebarLimits)
+		})
+	})
 	a.dialogs(c)
 }
 
@@ -355,12 +360,7 @@ func (a *App) cycle(d int) {
 // kept for when it comes back.
 func (a *App) sidebar(c *ui.Context) {
 	ui.Column(c).Fill().Background(colors.sidebar).Children(func() {
-		if a.monitorOnRight() {
-			a.sessionPanel(c)
-			return
-		}
-		split := ui.SplitVerticalPercent(c, &a.monitorPct, func() { a.monitorPanel(c) }, func() { a.sessionPanel(c) }).SplitReset(defaultMonitorPct).Fill()
-		a.splitMoved(c, split, &a.monitorPct, monitorLimits)
+		a.monitorPanel(c)
 	})
 }
 
@@ -380,12 +380,7 @@ func (a *App) mainContent(c *ui.Context) {
 	if a.monitorOnRight() {
 		monitor = func() { a.rightMonitor(c) }
 	}
-	terminal := func() {
-		ui.Column(c).Fill().Children(func() {
-			a.sessionTabs(c)
-			ui.Box(c).Grow(1).MinHeight(0).Children(func() { a.terminalArea(c) })
-		})
-	}
+	terminal := func() { a.terminalArea(c) }
 	if s := a.current(); s.isPanelTab() {
 		a.withRightColumn(c, func() { a.panelArea(c, s) }, monitor, nil)
 		return
