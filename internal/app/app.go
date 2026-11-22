@@ -339,8 +339,11 @@ func (a *App) View(c *ui.Context) {
 		a.dialogs(c)
 		return
 	}
-	split := ui.Split(c, &a.sideWidth, func() { a.sidebar(c) }, func() { a.mainArea(c) }).SplitReset(defaultSideWidth).Fill()
-	a.splitMoved(c, split, &a.sideWidth, sidebarLimits)
+	ui.Column(c).Fill().Children(func() {
+		a.sessionTabs(c)
+		split := ui.Split(c, &a.sideWidth, func() { a.sidebar(c) }, func() { a.mainArea(c) }).SplitReset(defaultSideWidth).Fill()
+		a.splitMoved(c, split, &a.sideWidth, sidebarLimits)
+	})
 	a.dialogs(c)
 }
 
@@ -355,12 +358,7 @@ func (a *App) cycle(d int) {
 // kept for when it comes back.
 func (a *App) sidebar(c *ui.Context) {
 	ui.Column(c).Fill().Background(colors.sidebar).Children(func() {
-		if a.monitorOnRight() {
-			a.sessionPanel(c)
-			return
-		}
-		split := ui.SplitVerticalPercent(c, &a.monitorPct, func() { a.monitorPanel(c) }, func() { a.sessionPanel(c) }).SplitReset(defaultMonitorPct).Fill()
-		a.splitMoved(c, split, &a.monitorPct, monitorLimits)
+		a.monitorPanel(c)
 	})
 }
 
@@ -371,6 +369,11 @@ func (a *App) sidebar(c *ui.Context) {
 // monitor on the right, the right column holds it too, on top, over the
 // panel when that is there.
 func (a *App) mainArea(c *ui.Context) {
+	a.mainContent(c)
+}
+
+// mainContent is the main window's terminal or panel, below the session tabs.
+func (a *App) mainContent(c *ui.Context) {
 	var monitor func()
 	if a.monitorOnRight() {
 		monitor = func() { a.rightMonitor(c) }
