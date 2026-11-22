@@ -1,18 +1,18 @@
 package app
 
 import (
-    "finallyshell/internal/icons"
-    "finallyshell/internal/widgets"
-    "finallyshell/locales"
+	"finallyshell/internal/icons"
+	"finallyshell/internal/widgets"
+	"finallyshell/locales"
 
-    "github.com/egoist/mygo/ui"
+	"github.com/egoist/mygo/ui"
 )
 
 // sessionTabs is the compact top bar used by the main terminal area.
 // Saved connections are opened from the folder button; open sessions stay
 // visible as horizontal tabs so the server list does not consume the sidebar.
 func (a *App) sessionTabs(c *ui.Context) {
-    type tabItem struct {
+	type tabItem struct {
 		session *Session
 		index   int
 	}
@@ -58,17 +58,17 @@ func (a *App) sessionTabs(c *ui.Context) {
 							if close.Clicked() {
 								closing = item.session
 							}
-						})
-					}
-				})
-				if chosen != selected && chosen >= 0 && chosen < len(items) {
-					a.active = items[chosen].index
+					})
 				}
 			})
-			if widgets.IconButton(c, "plus", locales.NewTab()).Clicked() {
-				a.NewTab()
+			if chosen != selected && chosen >= 0 && chosen < len(items) {
+				a.active = items[chosen].index
 			}
 		})
+		if widgets.IconButton(c, "plus", locales.NewTab()).Clicked() {
+			a.NewTab()
+		}
+	})
 	if closing != nil {
 		a.closeSession(closing)
 	}
