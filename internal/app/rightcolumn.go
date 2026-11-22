@@ -100,9 +100,12 @@ func (a *App) hiddenPanelStrip(c *ui.Context) {
 // hiddenRightMainArea is the main area while the panel on the right is
 // hidden: the terminal, and the strip on its right.
 func (a *App) hiddenRightMainArea(c *ui.Context) {
-	ui.Row(c).Fill().AlignItems(ui.Stretch).Background(theme.Background).Children(func() {
-		ui.Column(c).Grow(1).MinWidth(0).FillHeight().Children(func() { a.terminalArea(c) })
-		a.hiddenPanelStrip(c)
+	ui.Column(c).Fill().Background(theme.Background).Children(func() {
+		a.sessionTabs(c)
+		ui.Row(c).Grow(1).MinHeight(0).AlignItems(ui.Stretch).Children(func() {
+			ui.Column(c).Grow(1).MinWidth(0).FillHeight().Children(func() { a.terminalArea(c) })
+			a.hiddenPanelStrip(c)
+		})
 	})
 }
 
