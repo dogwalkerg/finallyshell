@@ -376,13 +376,14 @@ func (a *App) mainArea(c *ui.Context) {
 	a.mainContent(c)
 }
 
-// mainContent is the main window's terminal or panel, below the session tabs.
+// mainContent is the main window's terminal or panel. Session tabs belong
+// above the terminal in the right-hand workspace, not over the sidebar.
 func (a *App) mainContent(c *ui.Context) {
 	var monitor func()
 	if a.monitorOnRight() {
 		monitor = func() { a.rightMonitor(c) }
 	}
-	terminal := func() { a.terminalArea(c) }
+	terminal := func() { a.terminalWithSessionTabs(c) }
 	if s := a.current(); s.isPanelTab() {
 		a.withRightColumn(c, func() { a.panelArea(c, s) }, monitor, nil)
 		return
@@ -401,6 +402,15 @@ func (a *App) mainContent(c *ui.Context) {
 	a.withRightColumn(c, func() { a.terminalOverPanel(c) }, monitor, nil)
 }
 
+// terminalWithSessionTabs keeps the open sessions directly above the
+// terminal they select, within the right-hand workspace.
+func (a *App) terminalWithSessionTabs(c *ui.Context) {
+	ui.Column(c).Fill().Background(theme.Background).Children(func() {
+		a.sessionTabs(c)
+		ui.Box(c).Grow(1).MinHeight(0).Children(func() { a.terminalArea(c) })
+	})
+}
+
 // terminalOverPanel is the terminal over the bottom panel, or over its
 // tabs alone while it is collapsed.
 func (a *App) terminalOverPanel(c *ui.Context) {
@@ -408,7 +418,7 @@ func (a *App) terminalOverPanel(c *ui.Context) {
 		a.collapsedMainArea(c)
 		return
 	}
-	split := ui.SplitVerticalPercent(c, &a.terminalPct, func() { a.terminalArea(c) }, func() { a.bottomPanel(c, &a.bottomTab) }).SplitReset(defaultTerminalPct).Fill()
+	split := ui.SplitVerticalPercent(c, &a.terminalPct, func() { a.terminalWithSessionTabs(c) }, func() { a.bottomPanel(c, &a.bottomTab) }).SplitReset(defaultTerminalPct).Fill()
 	a.splitMoved(c, split, &a.terminalPct, terminalLimits)
 }
 

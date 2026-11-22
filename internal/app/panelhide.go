@@ -50,7 +50,7 @@ func (a *App) openBottomTab(tab int) {
 // the terminal over the panel's row of tabs.
 func (a *App) collapsedMainArea(c *ui.Context) {
 	ui.Column(c).Fill().Background(theme.Background).Children(func() {
-		ui.Column(c).Grow(1).MinHeight(0).FillWidth().Children(func() { a.terminalArea(c) })
+		ui.Column(c).Grow(1).MinHeight(0).FillWidth().Children(func() { a.terminalWithSessionTabs(c) })
 		a.panelTabRow(c, a.bottomTabs(), &a.bottomTab, true)
 	})
 }
