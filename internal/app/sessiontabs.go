@@ -38,26 +38,26 @@ func (a *App) sessionTabs(c *ui.Context) {
 	var closing *Session
 	ui.Row(c).Height(34).PaddingX(6).Gap(4).AlignItems(ui.Center).
 		Background(theme.Background).BorderWidth(0, 0, 1, 0).BorderColor(theme.Border).Children(func() {
-			if widgets.IconButton(c, "folder", locales.ConnectionsPage()).Clicked() {
-				a.showManager(false)
-			}
-			ui.ScrollHorizontal(c).Grow(1).MinWidth(0).Scrollbars(false).Children(func() {
-				chosen := selected
-				tabs := ui.TabsBase(c, &chosen, len(items))
-				tabs.List.Gap(2).Children(func() {
-					for i, item := range items {
-						tab := tabs.Tab(i).Row().Gap(5).AlignItems(ui.Center).Padding(4, 8).
-							MinWidth(72).MaxWidth(220).Shrink(0).Radius(4)
-						if i == chosen {
-							tab.Background(theme.Surface)
+		if widgets.IconButton(c, "folder", locales.ConnectionsPage()).Clicked() {
+			a.showManager(false)
+		}
+		ui.ScrollHorizontal(c).Grow(1).MinWidth(0).Scrollbars(false).Children(func() {
+			chosen := selected
+			tabs := ui.TabsBase(c, &chosen, len(items))
+			tabs.List.Gap(2).Children(func() {
+				for i, item := range items {
+					tab := tabs.Tab(i).Row().Gap(5).AlignItems(ui.Center).Padding(4, 8).
+						MinWidth(72).MaxWidth(220).Shrink(0).Radius(4)
+					if i == chosen {
+						tab.Background(theme.Surface)
+					}
+					tab.Children(func() {
+						ui.Icon(c, icons.Get("server")).FontSize(13).Shrink(0)
+						ui.Text(c, item.session.label()).SingleLine().Shrink(1).MinWidth(0)
+						close := widgets.IconButton(c, "x", locales.CloseSession()).Size(18, 18)
+						if close.Clicked() {
+							closing = item.session
 						}
-						tab.Children(func() {
-							ui.Icon(c, icons.Get("server")).FontSize(13).Shrink(0)
-							ui.Text(c, item.session.label()).SingleLine().Shrink(1).MinWidth(0)
-							close := widgets.IconButton(c, "x", locales.CloseSession()).Size(18, 18)
-							if close.Clicked() {
-								closing = item.session
-							}
 					})
 				}
 			})
@@ -73,4 +73,3 @@ func (a *App) sessionTabs(c *ui.Context) {
 		a.closeSession(closing)
 	}
 }
-
