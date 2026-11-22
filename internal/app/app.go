@@ -371,10 +371,7 @@ func (a *App) sidebar(c *ui.Context) {
 // monitor on the right, the right column holds it too, on top, over the
 // panel when that is there.
 func (a *App) mainArea(c *ui.Context) {
-	ui.Column(c).Fill().Children(func() {
-		a.sessionTabs(c)
-		ui.Box(c).Grow(1).MinHeight(0).Children(func() { a.mainContent(c) })
-	})
+	a.mainContent(c)
 }
 
 // mainContent is the main window's terminal or panel, below the session tabs.
@@ -383,7 +380,12 @@ func (a *App) mainContent(c *ui.Context) {
 	if a.monitorOnRight() {
 		monitor = func() { a.rightMonitor(c) }
 	}
-	terminal := func() { a.terminalArea(c) }
+	terminal := func() {
+		ui.Column(c).Fill().Children(func() {
+			a.sessionTabs(c)
+			ui.Box(c).Grow(1).MinHeight(0).Children(func() { a.terminalArea(c) })
+		})
+	}
 	if s := a.current(); s.isPanelTab() {
 		a.withRightColumn(c, func() { a.panelArea(c, s) }, monitor, nil)
 		return
